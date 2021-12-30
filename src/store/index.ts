@@ -1,17 +1,12 @@
 import { createStore, useStore as baseUseStore, Store } from "vuex";
 import { InjectionKey } from "vue";
-import defaultDays from "@/default-planner";
-import { day } from "@/models/day";
-import { saveStatePlugin } from "@/utils";
+import { calendarWeek } from "@/models/calendarday";
+import { loadWeek, saveWeek } from "@/services/calendarService";
 
-const storage = localStorage.getItem("days");
-
-const days: day[] = storage
-  ? JSON.parse(localStorage.getItem("days") || "") || defaultDays
-  : defaultDays;
+const week = loadWeek(new Date(2021, 11, 27));
 
 export interface State {
-  days: day[];
+  week: calendarWeek;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -19,11 +14,11 @@ export const key: InjectionKey<Store<State>> = Symbol();
 export const store = createStore<State>({
   plugins: [saveStatePlugin],
   state: {
-    days,
+    week,
   },
   mutations: {
-    UPDATE_DAY(state, { day: day, key, value }) {
-      day[key] = value;
+    UPDATE_DAY(state, { calendarDay: calendarDay, key, value }) {
+      calendarDay[key] = value;
     },
   },
   actions: {},
@@ -32,4 +27,10 @@ export const store = createStore<State>({
 
 export function useStore(): Store<State> {
   return baseUseStore(key);
+}
+
+function saveStatePlugin(store: Store<State>): void {
+  store.subscribe((mutation, state) => {
+    saveWeek(state.week);
+  });
 }
