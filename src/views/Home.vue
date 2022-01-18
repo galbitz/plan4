@@ -3,13 +3,18 @@
     <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
   </div> -->
-  <div class="home">
-    <div v-for="day in week" :key="day.day">
-      {{ day }}
-      <textarea
+  <div class="">
+    <div
+      v-for="day in week"
+      :key="day.day"
+      class="bg-blue-400 shadow-md p-1 m-1 rounded text-left"
+    >
+      <div class="p-1">{{ day }}</div>
+      <div class="p-1"><textarea
         :value="day.text"
         @change="updateDayProperty($event, day, 'text')"
-      />
+        />
+      </div>
     </div>
   </div>
 </template>
